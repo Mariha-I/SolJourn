@@ -1,0 +1,43 @@
+# Unity generated folders - these are huge and regenerated automatically
+/Library/
+/Temp/
+/Obj/
+/Build/
+/Builds/
+/Logs/
+/UserSettings/
+
+# Unity cache files
+*.pidb
+*.suo
+*.userprefs
+*.unityproj
+*.booproj
+
+# Visual Studio / VS Code
+.vs/
+*.csproj
+*.sln
+*.user
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+
+# OS generated junk
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db
+Desktop.ini
+
+# Build outputs
+*.apk
+*.aab
+*.ipa
+*.unitypackage
+
+# Crash logs
+sysinfo.txt
+crashlytics-build.properties
