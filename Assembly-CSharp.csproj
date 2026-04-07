@@ -69,6 +69,7 @@
     <Compile Include="Assets\Scripts\StarRenderer.cs" />
     <Compile Include="Assets\Scripts\AstroMath.cs" />
     <Compile Include="Assets\Scripts\PlanetariumCamera.cs" />
+    <Compile Include="Assets\TutorialInfo\Scripts\StarDatabase.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">
