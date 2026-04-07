@@ -64,7 +64,10 @@
     <Analyzer Include="C:\Program Files\Unity\Hub\Editor\2022.3.62f3\Editor\Data\Tools\Unity.SourceGenerators\Unity.Properties.SourceGenerator.dll" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\TutorialInfo\Scripts\PlanetariumCamera.cs" />
     <Compile Include="Assets\TutorialInfo\Scripts\Readme.cs" />
+    <Compile Include="Assets\TutorialInfo\Scripts\StarRenderer.cs" />
+    <Compile Include="Assets\TutorialInfo\Scripts\AstroMath.cs" />
     <Compile Include="Assets\TutorialInfo\Scripts\StarDatabase.cs" />
   </ItemGroup>
   <ItemGroup>
