@@ -1,12 +1,13 @@
 using UnityEngine;
 using System;
+using System.Collections.Generic;
 
 public class StarRenderer : MonoBehaviour
 {
     public StarDatabase database;
     public float skyRadius = 450f;
-    public float latitude  =  40.7f;  // hardcode your city for now
-    public float longitude = -74.0f;
+    public float latitude  = 43.0f;
+    public float longitude = -78.8f;
 
     void Start()
     {
@@ -17,40 +18,84 @@ public class StarRenderer : MonoBehaviour
     {
         DateTime utcNow = DateTime.UtcNow;
 
+        List<Vector3> vertices  = new List<Vector3>();
+        List<int>     indices   = new List<int>();
+        List<Color>   colors    = new List<Color>();
+
         foreach (StarData star in database.stars)
         {
             var (alt, az) = AstroMath.RaDecToAltAz(
                 star.ra, star.dec, latitude, longitude, utcNow);
 
-            // Only render stars above horizon
-            if (alt < 0) continue;
-
             Vector3 pos = AstroMath.AltAzToWorld(alt, az, skyRadius);
 
-            // Create a small quad for each star
-            GameObject go = GameObject.CreatePrimitive(PrimitiveType.Quad);
-            go.transform.position = pos;
-            go.transform.localScale = StarSize(star.magnitude);
-            go.transform.LookAt(Vector3.zero);  // face camera at center
-            go.transform.Rotate(0, 180, 0);     // flip to face inward
+            // Each star is a tiny quad (2 triangles, 4 vertices)
+            float size = StarSize(star.magnitude);
+            Color col  = StarColor(star.magnitude);
 
-            // Color by magnitude (brighter = slightly larger/whiter)
-            Renderer r = go.GetComponent<Renderer>();
-            r.material.color = StarColor(star.magnitude);
+            // Get vectors perpendicular to the view direction
+            Vector3 dir   = pos.normalized;
+            Vector3 right = Vector3.Cross(dir, Vector3.up).normalized;
+            Vector3 up2   = Vector3.Cross(right, dir).normalized;
+
+            int idx = vertices.Count;
+
+            vertices.Add(pos + (-right - up2) * size);
+            vertices.Add(pos + (-right + up2) * size);
+            vertices.Add(pos + ( right + up2) * size);
+            vertices.Add(pos + ( right - up2) * size);
+
+            colors.Add(col);
+            colors.Add(col);
+            colors.Add(col);
+            colors.Add(col);
+
+            // Two triangles making a quad
+            indices.Add(idx);     indices.Add(idx + 1); indices.Add(idx + 2);
+            indices.Add(idx);     indices.Add(idx + 2); indices.Add(idx + 3);
         }
+
+        // Build the mesh
+        Mesh mesh = new Mesh();
+        mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32; // supports >65k vertices
+        mesh.SetVertices(vertices);
+        mesh.SetTriangles(indices, 0);
+        mesh.SetColors(colors);
+        mesh.RecalculateNormals();
+        mesh.RecalculateBounds();
+
+        // Create a single GameObject to hold the mesh
+        GameObject starField = new GameObject("StarField");
+        starField.transform.position = Vector3.zero;
+
+        MeshFilter mf = starField.AddComponent<MeshFilter>();
+        mf.mesh = mesh;
+
+        MeshRenderer mr = starField.AddComponent<MeshRenderer>();
+        mr.material = CreateStarMaterial();
     }
 
-    Vector3 StarSize(float magnitude)
+    Material CreateStarMaterial()
     {
-        // Magnitude scale: lower number = brighter = bigger
-        float size = Mathf.Lerp(0.8f, 0.1f, Mathf.InverseLerp(-1.5f, 6.5f, magnitude));
-        return new Vector3(size, size, size);
+        // Unlit so stars aren't affected by scene lighting
+        Material mat = new Material(Shader.Find("Unlit/VertexColor"));
+        if (mat.shader.name != "Unlit/VertexColor")
+        {
+            // Fallback if VertexColor shader isn't available
+            mat = new Material(Shader.Find("Unlit/Color"));
+            mat.color = Color.white;
+        }
+        return mat;
+    }
+
+    float StarSize(float magnitude)
+    {
+        return Mathf.Lerp(1.5f, 0.3f, Mathf.InverseLerp(-1.5f, 6.5f, magnitude));
     }
 
     Color StarColor(float magnitude)
     {
-        // Bright stars slightly warm, dim stars slightly cool
         float t = Mathf.InverseLerp(-1.5f, 6.5f, magnitude);
-        return Color.Lerp(Color.white, new Color(0.6f, 0.7f, 1f), t);
+        return Color.Lerp(Color.white, new Color(0.6f, 0.6f, 0.6f), t);
     }
 }
