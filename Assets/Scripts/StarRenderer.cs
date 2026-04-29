@@ -21,30 +21,67 @@ public class StarRenderer : MonoBehaviour
         DateTime utcNow = DateTime.UtcNow;
 
         List<Vector3> vertices = new List<Vector3>();
-        List<int> indices = new List<int>();
+        List<int> triangles = new List<int>();
         List<Color> colors = new List<Color>();
-        float lat = (sensors != null && sensors.locationReady) ? sensors.latitude  : latitude;
+        List<Vector2> uvs = new List<Vector2>();
+
+        float lat = (sensors != null && sensors.locationReady) ? sensors.latitude : latitude;
         float lon = (sensors != null && sensors.locationReady) ? sensors.longitude : longitude;
 
-        int starIndex = 0;
+        int vertIndex = 0;
+
         foreach (StarData star in database.stars)
         {
             var (alt, az) = AstroMath.RaDecToAltAz(
                 star.ra, star.dec, lat, lon, utcNow);
 
-            Vector3 pos = AstroMath.AltAzToWorld(alt, az, skyRadius);
+            Vector3 center = AstroMath.AltAzToWorld(alt, az, skyRadius);
 
-            vertices.Add(pos);
-            indices.Add(starIndex);
-            colors.Add(StarColor(star.magnitude));
-            starIndex++;
+            float size = StarSize(star.magnitude);
+
+            // Direction toward center of sphere
+            Vector3 forward = -center.normalized;
+
+            // Build quad basis
+            Vector3 right = Vector3.Cross(Vector3.up, forward).normalized * size;
+            Vector3 up = Vector3.Cross(forward, right).normalized * size;
+
+            // Quad corners
+            vertices.Add(center - right - up);
+            vertices.Add(center + right - up);
+            vertices.Add(center + right + up);
+            vertices.Add(center - right + up);
+
+            Color c = StarColor(star.magnitude);
+            colors.Add(c);
+            colors.Add(c);
+            colors.Add(c);
+            colors.Add(c);
+
+            uvs.Add(new Vector2(0,0));
+            uvs.Add(new Vector2(1,0));
+            uvs.Add(new Vector2(1,1));
+            uvs.Add(new Vector2(0,1));
+
+            triangles.Add(vertIndex + 0);
+            triangles.Add(vertIndex + 1);
+            triangles.Add(vertIndex + 2);
+
+            triangles.Add(vertIndex + 0);
+            triangles.Add(vertIndex + 2);
+            triangles.Add(vertIndex + 3);
+
+            vertIndex += 4;
         }
 
         Mesh mesh = new Mesh();
         mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
+
         mesh.SetVertices(vertices);
+        mesh.SetTriangles(triangles, 0);
         mesh.SetColors(colors);
-        mesh.SetIndices(indices.ToArray(), MeshTopology.Points, 0);
+        mesh.SetUVs(0, uvs);
+        mesh.RecalculateNormals();
         mesh.RecalculateBounds();
 
         GameObject starField = new GameObject("StarField");
@@ -56,14 +93,12 @@ public class StarRenderer : MonoBehaviour
         MeshRenderer mr = starField.AddComponent<MeshRenderer>();
         mr.material = CreateStarMaterial();
 
-        // Remove old StarField if it exists
-        Debug.Log($"Star field created with {vertices.Count} points");
+        Debug.Log($"Created {database.stars.Count} star quads");
     }
 
     Material CreateStarMaterial()
     {
-        Material mat = new Material(Shader.Find("Unlit/Color"));
-        mat.color = Color.white;
+        Material mat = new Material(Shader.Find("Sprites/Default"));
         mat.SetInt("_Cull", (int)UnityEngine.Rendering.CullMode.Off);
         return mat;
     }

@@ -388,6 +388,59 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sensors: {fileID: 2138270753}
   useSensors: 1
+--- !u!1 &1400652296
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1400652298}
+  - component: {fileID: 1400652297}
+  m_Layer: 0
+  m_Name: ConstellationManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1400652297
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1400652296}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 704784b590ac4ef4baf642a8464b7b9d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  starDatabase: {fileID: 334600143}
+  starRenderer: {fileID: 334600141}
+  mainCamera: {fileID: 963194227}
+  constellationFile: {fileID: 4900000, guid: 8740741de5818df43874d44e4a86d4d1, type: 3}
+  namesFile: {fileID: 4900000, guid: 675d40b0d6cdbd442b03eda288170f5e, type: 3}
+  lineColor: {r: 0.90663695, g: 0.57924527, b: 1, a: 0.8}
+  lineWidth: 0.3
+  fadeAngle: 45
+  fadeSpeed: 3
+--- !u!4 &1400652298
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1400652296}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -11.185646, y: 2.7217598, z: 0.007843018}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2138270752
 GameObject:
   m_ObjectHideFlags: 0
@@ -443,3 +496,4 @@ SceneRoots:
   - {fileID: 705507995}
   - {fileID: 334600142}
   - {fileID: 2138270754}
+  - {fileID: 1400652298}

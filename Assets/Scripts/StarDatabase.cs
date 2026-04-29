@@ -4,10 +4,12 @@ using UnityEngine;
 [System.Serializable]
 public class StarData
 {
+    public int id;
     public float ra;
     public float dec;
     public float magnitude;
     public string properName;
+    public string constellation;
 }
 
 public class StarDatabase : MonoBehaviour
@@ -15,6 +17,8 @@ public class StarDatabase : MonoBehaviour
     public TextAsset csvFile;
     public List<StarData> stars = new List<StarData>();
     public float magnitudeCutoff = 6.5f;
+    public Dictionary<int, StarData> starById = new Dictionary<int, StarData>();
+    public Dictionary<int, StarData> starByHip = new Dictionary<int, StarData>();
 
     void Awake()
     {
@@ -39,6 +43,9 @@ public class StarDatabase : MonoBehaviour
         int decIdx  = -1;
         int magIdx  = -1;
         int nameIdx = -1;
+        int idIdx = -1;
+        int conIdx = -1;
+        int hipIdx = -1;
 
         for (int h = 0; h < headers.Length; h++)
         {
@@ -47,6 +54,9 @@ public class StarDatabase : MonoBehaviour
             if (clean == "dec")    decIdx  = h;
             if (clean == "mag")    magIdx  = h;
             if (clean == "proper") nameIdx = h;
+            if (clean == "id")     idIdx   = h;
+            if (clean =="con")     conIdx  = h;
+            if (clean == "hip")    hipIdx  = h;
         }
 
         Debug.Log($"Column indices - RA:{raIdx} Dec:{decIdx} Mag:{magIdx} Name:{nameIdx}");
@@ -71,12 +81,19 @@ public class StarDatabase : MonoBehaviour
             StarData star = new StarData();
             float.TryParse(cols[raIdx],  out star.ra);
             float.TryParse(cols[decIdx], out star.dec);
+            int.TryParse(cols[idIdx], out star.id);
             star.magnitude = mag;
             star.properName = nameIdx >= 0 ? cols[nameIdx].Trim() : "";
+            star.constellation = conIdx >= 0 ? cols[conIdx].Trim() : "";
+            int hip;
+            if (hipIdx >= 0 && int.TryParse(cols[hipIdx], out hip) && hip > 0)
+                starByHip[hip] = star;
 
             stars.Add(star);
         }
 
+        foreach (StarData s in stars)
+            starById[s.id] = s;
         Debug.Log($"Loaded {stars.Count} stars");
     }
 }
