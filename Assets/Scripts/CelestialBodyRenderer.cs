@@ -8,6 +8,7 @@ public class CelestialBodyRenderer : MonoBehaviour
     [Header("References")]
     public StarRenderer starRenderer;
     public Camera mainCamera;
+    public CelestialInfoPopup infoPopup;
 
     [Header("Colors")]
     public Color planetColor    = new Color(1.0f, 0.8f, 0.3f, 1f);  // warm yellow
@@ -150,6 +151,14 @@ public class CelestialBodyRenderer : MonoBehaviour
             tmp.alignment = TextAlignmentOptions.Center;
             tmp.color     = new Color(
                 body.labelColor.r, body.labelColor.g, body.labelColor.b, 0f);
+
+            var clickHandler = labelObj.AddComponent<CelestialClickHandler>();
+            clickHandler.popup     = infoPopup;
+            clickHandler.bodyName  = body.name;
+            clickHandler.ra        = body.fixedRa;
+            clickHandler.dec       = body.fixedDec;
+            clickHandler.isDynamic = body.bodyType != CelestialBodyType.Exoplanet;
+            clickHandler.mainCam   = mainCamera;
 
             RectTransform rect = labelObj.GetComponent<RectTransform>();
             rect.sizeDelta = new Vector2(600, 200);

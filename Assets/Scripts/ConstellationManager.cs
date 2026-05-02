@@ -253,7 +253,7 @@ public class ConstellationManager : MonoBehaviour
 
         foreach (ConstellationData con in constellations)
         {
-            if (con == null) continue;
+            if (con == null || string.IsNullOrEmpty(con.abbreviation)) continue;
             float targetAlpha = GetTargetAlpha(con);
             FadeConstellation(con.abbreviation, targetAlpha);
         }
@@ -281,7 +281,7 @@ public class ConstellationManager : MonoBehaviour
 
         foreach (LineRenderer lr in lineRenderers[abbrev])
         {
-            if (lr == null) continue;
+            if (lr == null || lr.gameObject == null) continue;
             Color c  = lr.startColor;
             c.a      = Mathf.MoveTowards(c.a, targetAlpha, Time.deltaTime * fadeSpeed);
             lr.startColor = c;

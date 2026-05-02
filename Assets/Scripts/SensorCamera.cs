@@ -26,7 +26,7 @@ public class SensorCamera : MonoBehaviour
             SensorLook();
             PinchZoom();
         }
-        else
+        else if (!Application.isMobilePlatform)
         {
             MouseLook(); // use mouse in editor
         }

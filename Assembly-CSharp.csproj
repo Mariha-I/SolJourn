@@ -68,13 +68,13 @@
     <Compile Include="Assets\Scripts\StarDatabase.cs" />
     <Compile Include="Assets\Scripts\LandingSequence.cs" />
     <Compile Include="Assets\Scripts\CelestialBodyRenderer.cs" />
-    <Compile Include="Assets\Scripts\CelestialCatalog.cs" />
     <Compile Include="Assets\Scripts\Readme.cs" />
     <Compile Include="Assets\Scripts\ConstellationManager.cs" />
     <Compile Include="Assets\Scripts\StarRenderer.cs" />
     <Compile Include="Assets\Scripts\ConstellationData.cs" />
+    <Compile Include="Assets\Scripts\CelestialInfoPopup.cs" />
     <Compile Include="Assets\Scripts\OrbitalMechanics.cs" />
-    <Compile Include="Assets\Scripts\SearchUI.cs" />
+    <Compile Include="Assets\Scripts\CelestialClickHandler.cs" />
     <Compile Include="Assets\Scripts\SensorCamera.cs" />
     <Compile Include="Assets\Scripts\AstroMath.cs" />
     <Compile Include="Assets\Scripts\DeviceSensors.cs" />
