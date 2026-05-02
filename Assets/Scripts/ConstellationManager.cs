@@ -253,6 +253,7 @@ public class ConstellationManager : MonoBehaviour
 
         foreach (ConstellationData con in constellations)
         {
+            if (con == null) continue;
             float targetAlpha = GetTargetAlpha(con);
             FadeConstellation(con.abbreviation, targetAlpha);
         }
@@ -339,6 +340,22 @@ public class ConstellationManager : MonoBehaviour
         Material mat = new Material(Shader.Find("Sprites/Default"));
         mat.SetInt("_Cull", (int)UnityEngine.Rendering.CullMode.Off);
         return mat;
+    }
+
+    public List<ConstellationData> GetConstellationList()
+    {
+        return constellations;
+    }
+
+    public Vector3 GetConstellationCenter(string fullName)
+    {
+        foreach (ConstellationData con in constellations)
+        {
+            if (string.Equals(con.fullName, fullName, 
+                StringComparison.OrdinalIgnoreCase))
+                return con.centerPoint;
+        }
+        return Vector3.zero;
     }
 
     float skyRadius => starRenderer.skyRadius;

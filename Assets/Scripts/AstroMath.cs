@@ -75,7 +75,7 @@ public static class AstroMath
         return lst;
     }
 
-    static double ToJulianDate(DateTime utc)
+    public static double ToJulianDate(DateTime utc)
     {
         int y = utc.Year;
         int m = utc.Month;
